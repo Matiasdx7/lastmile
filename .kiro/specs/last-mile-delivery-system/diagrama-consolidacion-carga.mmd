@@ -1,0 +1,15 @@
+flowchart TD
+    A[Pedidos Pendientes] --> B{¿Suficientes Pedidos<br/>para Consolidar?}
+    B -->|No| C[Esperar Más Pedidos]
+    C --> A
+    B -->|Sí| D[Analizar Ubicaciones]
+    D --> E[Agrupar por Zona Geográfica]
+    E --> F[Verificar Capacidad de Vehículo]
+    F --> G{¿Capacidad<br/>Suficiente?}
+    G -->|No| H[Dividir en Múltiples Cargas]
+    G -->|Sí| I[Crear Carga Consolidada]
+    H --> I
+    I --> J[Calcular Peso y Volumen Total]
+    J --> K[Asignar Prioridades]
+    K --> L[Carga Lista para Asignación]
+    L --> M[Notificar Disponibilidad]

@@ -1,0 +1,24 @@
+graph LR
+    A[Recepción de Pedidos] --> B[Consolidación de Carga]
+    B --> C[Asignación de Vehículos]
+    C --> D[Planificación Manual de Rutas]
+    D --> E[Despacho]
+    E --> F[Entrega al Cliente]
+    
+    A --> A1[Validar Pedido]
+    A1 --> A2[Almacenar Pedido]
+    
+    B --> B1[Agrupar Pedidos]
+    B1 --> B2[Crear Carga]
+    
+    C --> C1[Verificar Disponibilidad de Vehículos]
+    C1 --> C2[Asignar Vehículo]
+    
+    D --> D1[Generar Ruta]
+    D1 --> D2[Optimizar Secuencia]
+    
+    E --> E1[Enviar al Conductor]
+    E1 --> E2[Iniciar Seguimiento]
+    
+    F --> F1[Confirmar Entrega]
+    F1 --> F2[Actualizar Estado]

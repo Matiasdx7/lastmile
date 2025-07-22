@@ -1,0 +1,201 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: lmds-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-lastmiledelivery}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./shared/database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./shared/database/sample-data.sql:/docker-entrypoint-initdb.d/2-sample-data.sql
+      - ./shared/database/optimizations.sql:/docker-entrypoint-initdb.d/3-optimizations.sql
+      - ./auth-service/src/utils/init-db.sql:/docker-entrypoint-initdb.d/4-auth-init.sql
+    networks:
+      - lmds-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: lmds-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - lmds-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: lmds-api-gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - api-gateway/.env
+    depends_on:
+      - order-service
+      - vehicle-service
+      - route-service
+      - dispatch-service
+      - notification-service
+      - bpm-service
+      - auth-service
+    networks:
+      - lmds-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: lmds-auth-service
+    env_file:
+      - auth-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Order Service
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: lmds-order-service
+    env_file:
+      - order-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Vehicle Service
+  vehicle-service:
+    build:
+      context: .
+      dockerfile: vehicle-service/Dockerfile
+    container_name: lmds-vehicle-service
+    env_file:
+      - vehicle-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Route Service
+  route-service:
+    build:
+      context: .
+      dockerfile: route-service/Dockerfile
+    container_name: lmds-route-service
+    env_file:
+      - route-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Dispatch Service
+  dispatch-service:
+    build:
+      context: .
+      dockerfile: dispatch-service/Dockerfile
+    container_name: lmds-dispatch-service
+    env_file:
+      - dispatch-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Load Service
+  load-service:
+    build:
+      context: .
+      dockerfile: load-service/Dockerfile
+    container_name: lmds-load-service
+    env_file:
+      - load-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: lmds-notification-service
+    env_file:
+      - notification-service/.env
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # BPM Service
+  bpm-service:
+    build:
+      context: .
+      dockerfile: bpm-service/Dockerfile
+    container_name: lmds-bpm-service
+    env_file:
+      - bpm-service/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - lmds-network
+
+  # Web Dashboard
+  web-dashboard:
+    build:
+      context: ./web-dashboard
+      dockerfile: Dockerfile
+    container_name: lmds-web-dashboard
+    ports:
+      - "8080:80"
+    networks:
+      - lmds-network
+    depends_on:
+      - api-gateway
+
+networks:
+  lmds-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

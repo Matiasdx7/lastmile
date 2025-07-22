@@ -1,0 +1,49 @@
+{
+  "name": "last-mile-delivery-system",
+  "version": "1.0.0",
+  "description": "Last mile delivery system with microservices architecture",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd order-service && npm install && cd ../vehicle-service && npm install && cd ../route-service && npm install && cd ../dispatch-service && npm install && cd ../notification-service && npm install && cd ../bpm-service && npm install && cd ../web-dashboard && npm install",
+    "dev": "concurrently \"npm run dev:order\" \"npm run dev:vehicle\" \"npm run dev:route\" \"npm run dev:dispatch\" \"npm run dev:notification\" \"npm run dev:bpm\"",
+    "dev:order": "cd order-service && npm run dev",
+    "dev:vehicle": "cd vehicle-service && npm run dev",
+    "dev:route": "cd route-service && npm run dev",
+    "dev:dispatch": "cd dispatch-service && npm run dev",
+    "dev:notification": "cd notification-service && npm run dev",
+    "dev:bpm": "cd bpm-service && npm run dev",
+    "build": "npm run build:order && npm run build:vehicle && npm run build:route && npm run build:dispatch && npm run build:notification && npm run build:bpm",
+    "build:order": "cd order-service && npm run build",
+    "build:vehicle": "cd vehicle-service && npm run build",
+    "build:route": "cd route-service && npm run build",
+    "build:dispatch": "cd dispatch-service && npm run build",
+    "build:notification": "cd notification-service && npm run build",
+    "build:bpm": "cd bpm-service && npm run build",
+    "test": "npm run test:order && npm run test:vehicle && npm run test:route && npm run test:dispatch && npm run test:notification && npm run test:bpm",
+    "test:order": "cd order-service && npm test",
+    "test:vehicle": "cd vehicle-service && npm test",
+    "test:route": "cd route-service && npm test",
+    "test:dispatch": "cd dispatch-service && npm test",
+    "test:notification": "cd notification-service && npm test",
+    "test:bpm": "cd bpm-service && npm test",
+    "lint": "npm run lint:order && npm run lint:vehicle && npm run lint:route && npm run lint:dispatch && npm run lint:notification && npm run lint:bpm",
+    "lint:order": "cd order-service && npm run lint",
+    "lint:vehicle": "cd vehicle-service && npm run lint",
+    "lint:route": "cd route-service && npm run lint",
+    "lint:dispatch": "cd dispatch-service && npm run lint",
+    "lint:notification": "cd notification-service && npm run lint",
+    "lint:bpm": "cd bpm-service && npm run lint"
+  },
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.2",
+    "dotenv": "^17.2.0",
+    "lucide-react": "^0.525.0",
+    "pg": "^8.11.3",
+    "redis": "^4.6.10"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.10.7",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.2.2"
+  }
+}

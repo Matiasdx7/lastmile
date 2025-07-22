@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Mile Delivery System - BPM Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .diagram-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+        .description {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Last Mile Delivery System - BPM Diagrams</h1>
+        
+        <h2>System Architecture Overview</h2>
+        <div class="description">
+            <p>This diagram shows the overall system architecture including frontend applications, API gateway, microservices, data layer, and external integrations.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TB
+    subgraph "Frontend Layer"
+        WEB[Web Dashboard<br/>React]
+        MOBILE[Mobile App<br/>React Native]
+    end
+    
+    subgraph "API Gateway"
+        GATEWAY[API Gateway<br/>Express Gateway]
+    end
+    
+    subgraph "Microservices"
+        ORDER[Order Service<br/>Node.js]
+        VEHICLE[Vehicle Service<br/>Node.js]
+        ROUTE[Route Service<br/>Node.js]
+        DISPATCH[Dispatch Service<br/>Node.js]
+        NOTIFY[Notification Service<br/>Node.js]
+        BPM[BPM Service<br/>Node.js]
+    end
+    
+    subgraph "Data Layer"
+        POSTGRES[(PostgreSQL<br/>Primary DB)]
+        REDIS[(Redis<br/>Cache & Sessions)]
+    end
+    
+    subgraph "External Services"
+        MAPS[Maps API<br/>Google/Mapbox]
+        SMS[SMS Service<br/>Twilio]
+    end
+    
+    WEB --> GATEWAY
+    MOBILE --> GATEWAY
+    GATEWAY --> ORDER
+    GATEWAY --> VEHICLE
+    GATEWAY --> ROUTE
+    GATEWAY --> DISPATCH
+    GATEWAY --> NOTIFY
+    GATEWAY --> BPM
+    
+    ORDER --> POSTGRES
+    VEHICLE --> POSTGRES
+    ROUTE --> POSTGRES
+    DISPATCH --> POSTGRES
+    NOTIFY --> POSTGRES
+    BPM --> POSTGRES
+    
+    ORDER --> REDIS
+    VEHICLE --> REDIS
+    ROUTE --> REDIS
+    
+    ROUTE --> MAPS
+    NOTIFY --> SMS
+            </div>
+        </div>
+
+        <h2>BPM Process Flow - Main Workflow</h2>
+        <div class="description">
+            <p>This diagram illustrates the six main process steps in the last mile delivery workflow: Order Reception, Load Consolidation, Vehicle Assignment, Manual Route Planning, Dispatch, and Delivery to Customer.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph LR
+    A[Order Reception] --> B[Load Consolidation]
+    B --> C[Vehicle Assignment]
+    C --> D[Manual Route Planning]
+    D --> E[Dispatch]
+    E --> F[Delivery to Customer]
+    
+    A --> A1[Validate Order]
+    A1 --> A2[Store Order]
+    
+    B --> B1[Group Orders]
+    B1 --> B2[Create Load]
+    
+    C --> C1[Check Vehicle Availability]
+    C1 --> C2[Assign Vehicle]
+    
+    D --> D1[Generate Route]
+    D1 --> D2[Optimize Sequence]
+    
+    E --> E1[Send to Driver]
+    E1 --> E2[Start Tracking]
+    
+    F --> F1[Confirm Delivery]
+    F1 --> F2[Update Status]
+            </div>
+        </div>
+
+        <h2>Detailed Process States</h2>
+        <div class="description">
+            <p>This diagram shows the detailed state transitions for orders as they move through the delivery pipeline, including all possible status changes and decision points.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+stateDiagram-v2
+    [*] --> OrderReceived
+    OrderReceived --> Validated: Valid Order
+    OrderReceived --> Rejected: Invalid Order
+    Validated --> Pending: Store Order
+    Pending --> Consolidated: Group with Others
+    Consolidated --> VehicleAssigned: Assign Vehicle
+    VehicleAssigned --> RouteOptimized: Plan Route
+    RouteOptimized --> Dispatched: Send to Driver
+    Dispatched --> InTransit: Driver Starts
+    InTransit --> AtLocation: Arrive at Customer
+    AtLocation --> Delivered: Successful Delivery
+    AtLocation --> Failed: Delivery Failed
+    Failed --> Rescheduled: Retry Later
+    Failed --> Returned: Return to Depot
+    Delivered --> [*]
+    Returned --> [*]
+    Rejected --> [*]
+    Rescheduled --> Pending
+            </div>
+        </div>
+
+        <h2>Vehicle and Driver Workflow</h2>
+        <div class="description">
+            <p>This diagram shows the workflow from the vehicle and driver perspective, including vehicle assignment, route execution, and completion processes.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    START([Driver Starts Shift]) --> CHECK{Vehicle Available?}
+    CHECK -->|Yes| ASSIGN[Assign Vehicle]
+    CHECK -->|No| WAIT[Wait for Vehicle]
+    WAIT --> CHECK
+    ASSIGN --> READY[Vehicle Ready]
+    READY --> ROUTE{Route Assigned?}
+    ROUTE -->|Yes| DISPATCH[Receive Route]
+    ROUTE -->|No| STANDBY[Standby Mode]
+    STANDBY --> ROUTE
+    DISPATCH --> NAVIGATE[Navigate to First Stop]
+    NAVIGATE --> DELIVER[Attempt Delivery]
+    DELIVER --> SUCCESS{Delivery Successful?}
+    SUCCESS -->|Yes| CONFIRM[Confirm Delivery]
+    SUCCESS -->|No| RECORD[Record Failed Attempt]
+    CONFIRM --> MORE{More Stops?}
+    RECORD --> MORE
+    MORE -->|Yes| NEXT[Navigate to Next Stop]
+    MORE -->|No| COMPLETE[Route Complete]
+    NEXT --> DELIVER
+    COMPLETE --> RETURN[Return to Depot]
+    RETURN --> END([End Shift])
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html>

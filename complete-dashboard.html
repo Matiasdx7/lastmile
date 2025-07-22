@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Mile Delivery System - Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding-top: 20px;
+        }
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #3d5166;
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-menu li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #3d5166;
+            cursor: pointer;
+        }
+        .sidebar-menu li:hover {
+            background-color: #3d5166;
+        }
+        .sidebar-menu li.active {
+            background-color: #3498db;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.pending {
+            background-color: #ffeaa7;
+            color: #d35400;
+        }
+        .status.delivered {
+            background-color: #d4f1e3;
+            color: #27ae60;
+        }
+        .status.in-transit {
+            background-color: #d6e9ff;
+            color: #2980b9;
+        }
+        .logout-btn {
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Last Mile Delivery</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li id="menu-dashboard" class="active" onclick="showSection('dashboard')">Dashboard</li>
+                <li id="menu-orders" onclick="showSection('orders')">Pedidos</li>
+                <li id="menu-loads" onclick="showSection('loads')">Cargas</li>
+                <li id="menu-vehicles" onclick="showSection('vehicles')">Vehículos</li>
+                <li id="menu-routes" onclick="showSection('routes')">Rutas</li>
+                <li id="menu-dispatch" onclick="showSection('dispatch')">Despacho</li>
+                <li id="menu-notifications" onclick="showSection('notifications')">Notificaciones</li>
+                <li id="menu-bpm" onclick="showSection('bpm')">BPM</li>
+                <li id="menu-settings" onclick="showSection('settings')">Configuración</li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar">
+                    <span>Admin User</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section active">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Pedidos Totales</h3>
+                        <div class="card-value">248</div>
+                        <p>+12% desde la semana pasada</p>
+                    </div>
+                    <div class="card">
+                        <h3>Entregas Completadas</h3>
+                        <div class="card-value">187</div>
+                        <p>75% tasa de completado</p>
+                    </div>
+                    <div class="card">
+                        <h3>Vehículos Activos</h3>
+                        <div class="card-value">18</div>
+                        <p>90% de la flota</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tiempo Promedio de Entrega</h3>
+                        <div class="card-value">42 min</div>
+                        <p>-5 min desde el mes pasado</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Pedidos Recientes</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Cliente</th>
+                                <th>Dirección</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ORD-7829</td>
+                                <td>Juan Pérez</td>
+                                <td>Av. Libertador 1234, CABA</td>
+                                <td>21/07/2025 10:30</td>
+                                <td><span class="status delivered">Entregado</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7830</td>
+                                <td>María González</td>
+                                <td>Calle Corrientes 567, CABA</td>
+                                <td>21/07/2025 11:15</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7831</td>
+                                <td>Carlos Rodríguez</td>
+                                <td>Av. Santa Fe 890, CABA</td>
+                                <td>21/07/2025 12:00</td>
+                                <td><span class="status pending">Pendiente</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7832</td>
+                                <td>Ana Martínez</td>
+                                <td>Calle Florida 123, CABA</td>
+                                <td>21/07/2025 13:45</td>
+                                <td><span class="status pending">Pendiente</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7833</td>
+                                <td>Luis Sánchez</td>
+                                <td>Av. Córdoba 456, CABA</td>
+                                <td>21/07/2025 14:30</td>
+                                <td><span class="status delivered">Entregado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Vehicles Section -->
+            <div id="vehicles-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Total de Vehículos</h3>
+                        <div class="card-value">24</div>
+                        <p>+2 desde el mes pasado</p>
+                    </div>
+                    <div class="card">
+                        <h3>Vehículos Activos</h3>
+                        <div class="card-value">20</div>
+                        <p>83% de la flota</p>
+                    </div>
+                    <div class="card">
+                        <h3>En Mantenimiento</h3>
+                        <div class="card-value">3</div>
+                        <p>12% de la flota</p>
+                    </div>
+                    <div class="card">
+                        <h3>Inactivos</h3>
+                        <div class="card-value">1</div>
+                        <p>5% de la flota</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Flota de Vehículos</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Modelo</th>
+                                <th>Placa</th>
+                                <th>Tipo</th>
+                                <th>Capacidad</th>
+                                <th>Conductor</th>
+                                <th>Estado</th>
+                                <th>Próx. Mantenimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>VEH-001</td>
+                                <td>Mercedes-Benz Sprinter</td>
+                                <td>ABC 123</td>
+                                <td>Camioneta</td>
+                                <td>1200 kg</td>
+                                <td>Roberto Gómez</td>
+                                <td><span class="status delivered">Activo</span></td>
+                                <td>15/09/2025</td>
+                            </tr>
+                            <tr>
+                                <td>VEH-002</td>
+                                <td>Honda CG 150</td>
+                                <td>DEF 456</td>
+                                <td>Motocicleta</td>
+                                <td>25 kg</td>
+                                <td>Laura Fernández</td>
+                                <td><span class="status delivered">Activo</span></td>
+                                <td>05/10/2025</td>
+                            </tr>
+                            <tr>
+                                <td>VEH-003</td>
+                                <td>Iveco Daily</td>
+                                <td>GHI 789</td>
+                                <td>Camión</td>
+                                <td>3500 kg</td>
+                                <td>Miguel Torres</td>
+                                <td><span class="status pending">En Mantenimiento</span></td>
+                                <td>01/08/2025</td>
+                            </tr>
+                            <tr>
+                                <td>VEH-004</td>
+                                <td>Renault Kangoo</td>
+                                <td>JKL 012</td>
+                                <td>Camioneta</td>
+                                <td>800 kg</td>
+                                <td>Sofía López</td>
+                                <td><span class="status delivered">Activo</span></td>
+                                <td>20/09/2025</td>
+                            </tr>
+                            <tr>
+                                <td>VEH-005</td>
+                                <td>Yamaha YBR 125</td>
+                                <td>MNO 345</td>
+                                <td>Motocicleta</td>
+                                <td>20 kg</td>
+                                <td>Diego Ramírez</td>
+                                <td><span class="status delivered">Activo</span></td>
+                                <td>10/10/2025</td>
+                            </tr>
+                            <tr>
+                                <td>VEH-006</td>
+                                <td>Fiat Ducato</td>
+                                <td>PQR 678</td>
+                                <td>Camioneta</td>
+                                <td>1500 kg</td>
+                                <td>No asignado</td>
+                                <td><span class="status in-transit">Inactivo</span></td>
+                                <td>25/08/2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Mantenimientos Programados</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vehículo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Fecha Programada</th>
+                                <th>Costo Estimado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MANT-006</td>
+                                <td>VEH-001 (ABC 123)</td>
+                                <td>Preventivo</td>
+                                <td>Cambio de aceite y filtros</td>
+                                <td>15/09/2025</td>
+                                <td>$320</td>
+                            </tr>
+                            <tr>
+                                <td>MANT-007</td>
+                                <td>VEH-002 (DEF 456)</td>
+                                <td>Preventivo</td>
+                                <td>Cambio de aceite y ajuste de cadena</td>
+                                <td>05/10/2025</td>
+                                <td>$180</td>
+                            </tr>
+                            <tr>
+                                <td>MANT-008</td>
+                                <td>VEH-004 (JKL 012)</td>
+                                <td>Preventivo</td>
+                                <td>Revisión general y cambio de filtros</td>
+                                <td>20/09/2025</td>
+                                <td>$300</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Dispatch Section -->
+            <div id="dispatch-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Vehículos Activos</h3>
+                        <div class="card-value">18</div>
+                        <p>+2 desde ayer</p>
+                    </div>
+                    <div class="card">
+                        <h3>Entregas Hoy</h3>
+                        <div class="card-value">42</div>
+                        <p>+8 desde ayer</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tiempo Promedio</h3>
+                        <div class="card-value">28m</div>
+                        <p>-3m desde ayer</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tasa de Éxito</h3>
+                        <div class="card-value">96%</div>
+                        <p>+2% desde ayer</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Entregas Activas</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Orden</th>
+                                <th>Cliente</th>
+                                <th>Dirección</th>
+                                <th>Estado</th>
+                                <th>Vehículo</th>
+                                <th>Conductor</th>
+                                <th>ETA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DEL-7829</td>
+                                <td>ORD-7829</td>
+                                <td>Juan Pérez</td>
+                                <td>Av. Libertador 1234, CABA</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                                <td>VEH-001</td>
+                                <td>Roberto Gómez</td>
+                                <td>15 min</td>
+                            </tr>
+                            <tr>
+                                <td>DEL-7830</td>
+                                <td>ORD-7830</td>
+                                <td>María González</td>
+                                <td>Calle Corrientes 567, CABA</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                                <td>VEH-002</td>
+                                <td>Laura Fernández</td>
+                                <td>8 min</td>
+                            </tr>
+                            <tr>
+                                <td>DEL-7831</td>
+                                <td>ORD-7831</td>
+                                <td>Carlos Rodríguez</td>
+                                <td>Av. Santa Fe 890, CABA</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                                <td>VEH-003</td>
+                                <td>Miguel Torres</td>
+                                <td>22 min</td>
+                            </tr>
+                            <tr>
+                                <td>DEL-7832</td>
+                                <td>ORD-7832</td>
+                                <td>Ana Martínez</td>
+                                <td>Calle Florida 123, CABA</td>
+                                <td><span class="status pending">Retrasado</span></td>
+                                <td>VEH-001</td>
+                                <td>Roberto Gómez</td>
+                                <td>35 min</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Alertas Activas</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Vehículo</th>
+                                <th>Mensaje</th>
+                                <th>Hora</th>
+                                <th>Severidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ALT-001</td>
+                                <td>Retraso</td>
+                                <td>VEH-001</td>
+                                <td>Vehículo retrasado por tráfico</td>
+                                <td>10:45 AM</td>
+                                <td><span class="status pending">Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>ALT-002</td>
+                                <td>Desviación</td>
+                                <td>VEH-002</td>
+                                <td>Desviación de ruta detectada</td>
+                                <td>11:20 AM</td>
+                                <td><span class="status in-transit">Baja</span></td>
+                            </tr>
+                            <tr>
+                                <td>ALT-003</td>
+                                <td>Problema</td>
+                                <td>VEH-003</td>
+                                <td>Problema mecánico reportado</td>
+                                <td>11:35 AM</td>
+                                <td><span class="status pending">Alta</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- BPM Section -->
+            <div id="bpm-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Procesos Activos</h3>
+                        <div class="card-value">12</div>
+                        <p>+3 desde la semana pasada</p>
+                    </div>
+                    <div class="card">
+                        <h3>Procesos Completados</h3>
+                        <div class="card-value">87</div>
+                        <p>+15 desde la semana pasada</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tiempo Promedio</h3>
+                        <div class="card-value">3h 45m</div>
+                        <p>-15m desde la semana pasada</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tasa de Éxito</h3>
+                        <div class="card-value">94%</div>
+                        <p>+2% desde la semana pasada</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Procesos Activos</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Iniciado</th>
+                                <th>Paso Actual</th>
+                                <th>Asignado a</th>
+                                <th>Progreso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PROC-001</td>
+                                <td>Procesamiento de Pedidos</td>
+                                <td>21/07/2025 10:30</td>
+                                <td>Planificación de Ruta</td>
+                                <td>Carlos Rodríguez</td>
+                                <td>5/9 pasos</td>
+                            </tr>
+                            <tr>
+                                <td>PROC-002</td>
+                                <td>Gestión de Incidencias</td>
+                                <td>21/07/2025 11:15</td>
+                                <td>Asignación de Responsable</td>
+                                <td>María González</td>
+                                <td>3/6 pasos</td>
+                            </tr>
+                            <tr>
+                                <td>PROC-003</td>
+                                <td>Mantenimiento de Vehículos</td>
+                                <td>19/07/2025 09:00</td>
+                                <td>Control de Calidad</td>
+                                <td>Luis Gómez</td>
+                                <td>6/7 pasos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Cuellos de Botella Identificados</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Proceso</th>
+                                <th>Paso</th>
+                                <th>Tiempo Promedio</th>
+                                <th>Impacto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Procesamiento de Pedidos</td>
+                                <td>Planificación de Ruta</td>
+                                <td>45m</td>
+                                <td><span class="status pending">Alto</span></td>
+                            </tr>
+                            <tr>
+                                <td>Gestión de Incidencias</td>
+                                <td>Asignación de Responsable</td>
+                                <td>35m</td>
+                                <td><span class="status in-transit">Medio</span></td>
+                            </tr>
+                            <tr>
+                                <td>Mantenimiento de Vehículos</td>
+                                <td>Diagnóstico</td>
+                                <td>1h 15m</td>
+                                <td><span class="status pending">Alto</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Other sections (orders, loads, routes, notifications, settings) can be added here -->
+            <div id="orders-section" class="content-section">
+                <h2>Gestión de Pedidos</h2>
+                <p>Esta sección está en desarrollo...</p>
+            </div>
+            
+            <div id="loads-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Cargas Totales</h3>
+                        <div class="card-value">32</div>
+                        <p>+5 desde la semana pasada</p>
+                    </div>
+                    <div class="card">
+                        <h3>Cargas Pendientes</h3>
+                        <div class="card-value">8</div>
+                        <p>25% del total</p>
+                    </div>
+                    <div class="card">
+                        <h3>Cargas Asignadas</h3>
+                        <div class="card-value">15</div>
+                        <p>47% del total</p>
+                    </div>
+                    <div class="card">
+                        <h3>Cargas Entregadas</h3>
+                        <div class="card-value">9</div>
+                        <p>28% del total</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Cargas Pendientes de Asignación</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Carga</th>
+                                <th>Pedidos</th>
+                                <th>Peso Total</th>
+                                <th>Volumen</th>
+                                <th>Zona</th>
+                                <th>Fecha Límite</th>
+                                <th>Prioridad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>LOAD-001</td>
+                                <td>5 pedidos</td>
+                                <td>450 kg</td>
+                                <td>2.3 m³</td>
+                                <td>Norte</td>
+                                <td>22/07/2025</td>
+                                <td><span class="status pending">Alta</span></td>
+                                <td>
+                                    <button class="status delivered" style="cursor:pointer">Asignar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LOAD-002</td>
+                                <td>3 pedidos</td>
+                                <td>280 kg</td>
+                                <td>1.5 m³</td>
+                                <td>Sur</td>
+                                <td>22/07/2025</td>
+                                <td><span class="status in-transit">Media</span></td>
+                                <td>
+                                    <button class="status delivered" style="cursor:pointer">Asignar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LOAD-003</td>
+                                <td>7 pedidos</td>
+                                <td>620 kg</td>
+                                <td>3.2 m³</td>
+                                <td>Este</td>
+                                <td>23/07/2025</td>
+                                <td><span class="status in-transit">Media</span></td>
+                                <td>
+                                    <button class="status delivered" style="cursor:pointer">Asignar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LOAD-004</td>
+                                <td>4 pedidos</td>
+                                <td>350 kg</td>
+                                <td>1.8 m³</td>
+                                <td>Oeste</td>
+                                <td>23/07/2025</td>
+                                <td><span class="status pending">Alta</span></td>
+                                <td>
+                                    <button class="status delivered" style="cursor:pointer">Asignar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Cargas Asignadas</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Carga</th>
+                                <th>Pedidos</th>
+                                <th>Vehículo</th>
+                                <th>Conductor</th>
+                                <th>Ruta</th>
+                                <th>Estado</th>
+                                <th>Progreso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>LOAD-005</td>
+                                <td>6 pedidos</td>
+                                <td>VEH-001</td>
+                                <td>Roberto Gómez</td>
+                                <td>RUT-101</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                                <td>3/6 entregas</td>
+                                <td>
+                                    <button class="status in-transit" style="cursor:pointer">Rastrear</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LOAD-006</td>
+                                <td>4 pedidos</td>
+                                <td>VEH-002</td>
+                                <td>Laura Fernández</td>
+                                <td>RUT-102</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                                <td>2/4 entregas</td>
+                                <td>
+                                    <button class="status in-transit" style="cursor:pointer">Rastrear</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LOAD-007</td>
+                                <td>8 pedidos</td>
+                                <td>VEH-003</td>
+                                <td>Miguel Torres</td>
+                                <td>RUT-103</td>
+                                <td><span class="status in-transit">En Tránsito</span></td>
+                                <td>5/8 entregas</td>
+                                <td>
+                                    <button class="status in-transit" style="cursor:pointer">Rastrear</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LOAD-008</td>
+                                <td>5 pedidos</td>
+                                <td>VEH-004</td>
+                                <td>Sofía López</td>
+                                <td>RUT-104</td>
+                                <td><span class="status pending">Retrasado</span></td>
+                                <td>2/5 entregas</td>
+                                <td>
+                                    <button class="status in-transit" style="cursor:pointer">Rastrear</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <h2>Detalle de Consolidación</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Cliente</th>
+                                <th>Dirección</th>
+                                <th>Peso</th>
+                                <th>Volumen</th>
+                                <th>Ventana de Tiempo</th>
+                                <th>Compatibilidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ORD-7834</td>
+                                <td>Pedro Gómez</td>
+                                <td>Av. Cabildo 2500, CABA</td>
+                                <td>85 kg</td>
+                                <td>0.4 m³</td>
+                                <td>9:00 - 12:00</td>
+                                <td><span class="status delivered">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7835</td>
+                                <td>Lucía Fernández</td>
+                                <td>Av. Cabildo 2650, CABA</td>
+                                <td>120 kg</td>
+                                <td>0.6 m³</td>
+                                <td>9:00 - 12:00</td>
+                                <td><span class="status delivered">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7836</td>
+                                <td>Martín Rodríguez</td>
+                                <td>Av. Cabildo 2800, CABA</td>
+                                <td>95 kg</td>
+                                <td>0.5 m³</td>
+                                <td>9:00 - 12:00</td>
+                                <td><span class="status delivered">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7837</td>
+                                <td>Carolina López</td>
+                                <td>Av. Cabildo 3000, CABA</td>
+                                <td>150 kg</td>
+                                <td>0.8 m³</td>
+                                <td>9:00 - 12:00</td>
+                                <td><span class="status in-transit">Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORD-7838</td>
+                                <td>Gabriel Martínez</td>
+                                <td>Av. Cabildo 3200, CABA</td>
+                                <td>75 kg</td>
+                                <td>0.3 m³</td>
+                                <td>9:00 - 12:00</td>
+                                <td><span class="status delivered">Alta</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button class="status delivered" style="cursor:pointer; padding: 10px 20px;">Consolidar Carga</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="routes-section" class="content-section">
+                <h2>Gestión de Rutas</h2>
+                <p>Esta sección está en desarrollo...</p>
+            </div>
+            
+            <div id="notifications-section" class="content-section">
+                <h2>Notificaciones</h2>
+                <p>Esta sección está en desarrollo...</p>
+            </div>
+            
+            <div id="settings-section" class="content-section">
+                <h2>Configuración</h2>
+                <p>Esta sección está en desarrollo...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`${sectionId}-section`).classList.add('active');
+            
+            // Update page title
+            document.getElementById('page-title').textContent = 
+                sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
+            
+            // Update active menu item
+            const menuItems = document.querySelectorAll('.sidebar-menu li');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(`menu-${sectionId}`).classList.add('active');
+        }
+        
+        function logout() {
+            alert('Logout functionality would be implemented here.');
+        }
+    </script>
+</body>
+</html>

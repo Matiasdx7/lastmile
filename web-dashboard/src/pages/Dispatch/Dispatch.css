@@ -1,0 +1,404 @@
+.dispatch-container {
+  padding: 20px;
+}
+
+.dispatch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dispatch-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dispatch-button {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dispatch-button.success {
+  background-color: #2ecc71;
+}
+
+.dispatch-button.warning {
+  background-color: #f39c12;
+}
+
+.dispatch-button.danger {
+  background-color: #e74c3c;
+}
+
+.dispatch-button:hover {
+  opacity: 0.9;
+}
+
+.dispatch-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.dispatch-tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.dispatch-tab.active {
+  border-bottom: 2px solid #3498db;
+  color: #3498db;
+  font-weight: bold;
+}
+
+.dispatch-tab-content {
+  display: none;
+}
+
+.dispatch-tab-content.active {
+  display: block;
+}
+
+.dispatch-map {
+  height: 500px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 100%;
+  background-image: url('https://via.placeholder.com/1200x500?text=Mapa+de+Despacho');
+  background-size: cover;
+  background-position: center;
+}
+
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.map-control-button {
+  padding: 5px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.map-control-button:hover {
+  background-color: #f5f5f5;
+}
+
+.vehicle-marker {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.vehicle-marker:hover {
+  transform: scale(1.2);
+}
+
+.vehicle-marker.truck {
+  background-color: #e74c3c;
+}
+
+.vehicle-marker.motorcycle {
+  background-color: #2ecc71;
+}
+
+.vehicle-marker.van {
+  background-color: #f39c12;
+}
+
+.vehicle-info {
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  min-width: 200px;
+  z-index: 10;
+}
+
+.vehicle-info h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.vehicle-info p {
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+.vehicle-info-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+}
+
+.dispatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.dispatch-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
+.dispatch-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dispatch-card-count {
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.dispatch-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dispatch-list-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.dispatch-list-item:last-child {
+  border-bottom: none;
+}
+
+.dispatch-list-item:hover {
+  background-color: #f9f9f9;
+}
+
+.dispatch-list-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.dispatch-list-item-title {
+  font-weight: bold;
+}
+
+.dispatch-list-item-status {
+  font-size: 0.8em;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.status-pending {
+  background-color: #ffeaa7;
+  color: #d35400;
+}
+
+.status-in-transit {
+  background-color: #d6e9ff;
+  color: #2980b9;
+}
+
+.status-delivered {
+  background-color: #d4f1e3;
+  color: #27ae60;
+}
+
+.status-delayed {
+  background-color: #ffcdd2;
+  color: #c0392b;
+}
+
+.dispatch-list-item-details {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.dispatch-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dispatch-table th,
+.dispatch-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.dispatch-table th {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.dispatch-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.dispatch-action-button {
+  padding: 5px 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.dispatch-action-button.success {
+  background-color: #2ecc71;
+}
+
+.dispatch-action-button.warning {
+  background-color: #f39c12;
+}
+
+.dispatch-action-button.danger {
+  background-color: #e74c3c;
+}
+
+.dispatch-action-button:hover {
+  opacity: 0.9;
+}
+
+.alert-badge {
+  display: inline-block;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.dispatch-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-label {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.filter-select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  min-width: 150px;
+}
+
+.search-box {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  min-width: 200px;
+}
+
+.dispatch-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 15px;
+  flex: 1;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2em;
+  font-weight: bold;
+  color: #3498db;
+  margin: 10px 0;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.stat-trend {
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trend-up {
+  color: #2ecc71;
+}
+
+.trend-down {
+  color: #e74c3c;
+}

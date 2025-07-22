@@ -1,0 +1,22 @@
+graph TD
+    START([Conductor Inicia Turno]) --> CHECK{¿Vehículo Disponible?}
+    CHECK -->|Sí| ASSIGN[Asignar Vehículo]
+    CHECK -->|No| WAIT[Esperar Vehículo]
+    WAIT --> CHECK
+    ASSIGN --> READY[Vehículo Listo]
+    READY --> ROUTE{¿Ruta Asignada?}
+    ROUTE -->|Sí| DISPATCH[Recibir Ruta]
+    ROUTE -->|No| STANDBY[Modo Espera]
+    STANDBY --> ROUTE
+    DISPATCH --> NAVIGATE[Navegar a Primera Parada]
+    NAVIGATE --> DELIVER[Intentar Entrega]
+    DELIVER --> SUCCESS{¿Entrega Exitosa?}
+    SUCCESS -->|Sí| CONFIRM[Confirmar Entrega]
+    SUCCESS -->|No| RECORD[Registrar Intento Fallido]
+    CONFIRM --> MORE{¿Más Paradas?}
+    RECORD --> MORE
+    MORE -->|Sí| NEXT[Navegar a Siguiente Parada]
+    MORE -->|No| COMPLETE[Ruta Completa]
+    NEXT --> DELIVER
+    COMPLETE --> RETURN[Regresar al Depósito]
+    RETURN --> END([Fin del Turno])

@@ -1,0 +1,32 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createOrderRouter = void 0;
+const express_1 = require("express");
+const OrderController_1 = require("../controllers/OrderController");
+const OrderService_1 = require("../services/OrderService");
+const OrderRepository_1 = require("../../../shared/database/repositories/OrderRepository");
+const createOrderRouter = (pool, redisClient = null) => {
+    const router = (0, express_1.Router)();
+    const orderRepository = new OrderRepository_1.OrderRepository(pool);
+    const orderService = new OrderService_1.OrderService(orderRepository, redisClient);
+    const orderController = new OrderController_1.OrderController(orderService);
+    const createOrder = orderController.createOrder.bind(orderController);
+    const getAllOrders = orderController.getAllOrders.bind(orderController);
+    const getOrderById = orderController.getOrderById.bind(orderController);
+    const updateOrder = orderController.updateOrder.bind(orderController);
+    const deleteOrder = orderController.deleteOrder.bind(orderController);
+    const getOrdersByStatus = orderController.getOrdersByStatus.bind(orderController);
+    const updateOrderStatus = orderController.updateOrderStatus.bind(orderController);
+    const getOrdersNeedingReview = orderController.getOrdersNeedingReview.bind(orderController);
+    router.post('/', createOrder);
+    router.get('/', getAllOrders);
+    router.get('/review', getOrdersNeedingReview);
+    router.get('/status/:status', getOrdersByStatus);
+    router.get('/:id', getOrderById);
+    router.put('/:id', updateOrder);
+    router.delete('/:id', deleteOrder);
+    router.patch('/:id/status', updateOrderStatus);
+    return router;
+};
+exports.createOrderRouter = createOrderRouter;
+//# sourceMappingURL=orderRoutes.js.map

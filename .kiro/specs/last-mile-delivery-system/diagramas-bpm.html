@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Entrega de Última Milla - Diagramas BPM</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .diagram-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+        .description {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Entrega de Última Milla - Diagramas BPM</h1>
+        
+        <h2>Arquitectura General del Sistema</h2>
+        <div class="description">
+            <p>Este diagrama muestra la arquitectura general del sistema incluyendo aplicaciones frontend, gateway de API, microservicios, capa de datos e integraciones externas.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TB
+    subgraph "Capa Frontend"
+        WEB[Panel Web<br/>React]
+        MOBILE[App Móvil<br/>React Native]
+    end
+    
+    subgraph "Gateway API"
+        GATEWAY[Gateway API<br/>Express Gateway]
+    end
+    
+    subgraph "Microservicios"
+        ORDER[Servicio de Pedidos<br/>Node.js]
+        VEHICLE[Servicio de Vehículos<br/>Node.js]
+        ROUTE[Servicio de Rutas<br/>Node.js]
+        DISPATCH[Servicio de Despacho<br/>Node.js]
+        NOTIFY[Servicio de Notificaciones<br/>Node.js]
+        BPM[Servicio BPM<br/>Node.js]
+    end
+    
+    subgraph "Capa de Datos"
+        POSTGRES[(PostgreSQL<br/>BD Principal)]
+        REDIS[(Redis<br/>Cache y Sesiones)]
+    end
+    
+    subgraph "Servicios Externos"
+        MAPS[API de Mapas<br/>Google/Mapbox]
+        SMS[Servicio SMS<br/>Twilio]
+    end
+    
+    WEB --> GATEWAY
+    MOBILE --> GATEWAY
+    GATEWAY --> ORDER
+    GATEWAY --> VEHICLE
+    GATEWAY --> ROUTE
+    GATEWAY --> DISPATCH
+    GATEWAY --> NOTIFY
+    GATEWAY --> BPM
+    
+    ORDER --> POSTGRES
+    VEHICLE --> POSTGRES
+    ROUTE --> POSTGRES
+    DISPATCH --> POSTGRES
+    NOTIFY --> POSTGRES
+    BPM --> POSTGRES
+    
+    ORDER --> REDIS
+    VEHICLE --> REDIS
+    ROUTE --> REDIS
+    
+    ROUTE --> MAPS
+    NOTIFY --> SMS
+            </div>
+        </div>
+
+        <h2>Flujo de Proceso BPM - Flujo Principal</h2>
+        <div class="description">
+            <p>Este diagrama ilustra los seis pasos principales del proceso en el flujo de trabajo de entrega de última milla: Recepción de Pedidos, Consolidación de Carga, Asignación de Vehículos, Planificación Manual de Rutas, Despacho y Entrega al Cliente.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph LR
+    A[Recepción de Pedidos] --> B[Consolidación de Carga]
+    B --> C[Asignación de Vehículos]
+    C --> D[Planificación Manual de Rutas]
+    D --> E[Despacho]
+    E --> F[Entrega al Cliente]
+    
+    A --> A1[Validar Pedido]
+    A1 --> A2[Almacenar Pedido]
+    
+    B --> B1[Agrupar Pedidos]
+    B1 --> B2[Crear Carga]
+    
+    C --> C1[Verificar Disponibilidad de Vehículos]
+    C1 --> C2[Asignar Vehículo]
+    
+    D --> D1[Generar Ruta]
+    D1 --> D2[Optimizar Secuencia]
+    
+    E --> E1[Enviar al Conductor]
+    E1 --> E2[Iniciar Seguimiento]
+    
+    F --> F1[Confirmar Entrega]
+    F1 --> F2[Actualizar Estado]
+            </div>
+        </div>
+
+        <h2>Estados Detallados del Proceso</h2>
+        <div class="description">
+            <p>Este diagrama muestra las transiciones detalladas de estado para los pedidos mientras se mueven a través del pipeline de entrega, incluyendo todos los posibles cambios de estado y puntos de decisión.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+stateDiagram-v2
+    [*] --> PedidoRecibido
+    PedidoRecibido --> Validado: Pedido Válido
+    PedidoRecibido --> Rechazado: Pedido Inválido
+    Validado --> Pendiente: Almacenar Pedido
+    Pendiente --> Consolidado: Agrupar con Otros
+    Consolidado --> VehiculoAsignado: Asignar Vehículo
+    VehiculoAsignado --> RutaOptimizada: Planificar Ruta
+    RutaOptimizada --> Despachado: Enviar al Conductor
+    Despachado --> EnTransito: Conductor Inicia
+    EnTransito --> EnUbicacion: Llegar al Cliente
+    EnUbicacion --> Entregado: Entrega Exitosa
+    EnUbicacion --> Fallido: Entrega Fallida
+    Fallido --> Reprogramado: Reintentar Después
+    Fallido --> Devuelto: Devolver al Depósito
+    Entregado --> [*]
+    Devuelto --> [*]
+    Rechazado --> [*]
+    Reprogramado --> Pendiente
+            </div>
+        </div>
+
+        <h2>Flujo de Trabajo del Vehículo y Conductor</h2>
+        <div class="description">
+            <p>Este diagrama muestra el flujo de trabajo desde la perspectiva del vehículo y conductor, incluyendo asignación de vehículo, ejecución de ruta y procesos de finalización.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    START([Conductor Inicia Turno]) --> CHECK{¿Vehículo Disponible?}
+    CHECK -->|Sí| ASSIGN[Asignar Vehículo]
+    CHECK -->|No| WAIT[Esperar Vehículo]
+    WAIT --> CHECK
+    ASSIGN --> READY[Vehículo Listo]
+    READY --> ROUTE{¿Ruta Asignada?}
+    ROUTE -->|Sí| DISPATCH[Recibir Ruta]
+    ROUTE -->|No| STANDBY[Modo Espera]
+    STANDBY --> ROUTE
+    DISPATCH --> NAVIGATE[Navegar a Primera Parada]
+    NAVIGATE --> DELIVER[Intentar Entrega]
+    DELIVER --> SUCCESS{¿Entrega Exitosa?}
+    SUCCESS -->|Sí| CONFIRM[Confirmar Entrega]
+    SUCCESS -->|No| RECORD[Registrar Intento Fallido]
+    CONFIRM --> MORE{¿Más Paradas?}
+    RECORD --> MORE
+    MORE -->|Sí| NEXT[Navegar a Siguiente Parada]
+    MORE -->|No| COMPLETE[Ruta Completa]
+    NEXT --> DELIVER
+    COMPLETE --> RETURN[Regresar al Depósito]
+    RETURN --> END([Fin del Turno])
+            </div>
+        </div>
+
+        <h2>Proceso de Consolidación de Carga</h2>
+        <div class="description">
+            <p>Este diagrama detalla específicamente el proceso de consolidación de carga, mostrando cómo se agrupan múltiples pedidos en cargas optimizadas.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+flowchart TD
+    A[Pedidos Pendientes] --> B{¿Suficientes Pedidos<br/>para Consolidar?}
+    B -->|No| C[Esperar Más Pedidos]
+    C --> A
+    B -->|Sí| D[Analizar Ubicaciones]
+    D --> E[Agrupar por Zona Geográfica]
+    E --> F[Verificar Capacidad de Vehículo]
+    F --> G{¿Capacidad<br/>Suficiente?}
+    G -->|No| H[Dividir en Múltiples Cargas]
+    G -->|Sí| I[Crear Carga Consolidada]
+    H --> I
+    I --> J[Calcular Peso y Volumen Total]
+    J --> K[Asignar Prioridades]
+    K --> L[Carga Lista para Asignación]
+    L --> M[Notificar Disponibilidad]
+            </div>
+        </div>
+
+        <h2>Proceso de Optimización de Rutas</h2>
+        <div class="description">
+            <p>Este diagrama muestra el proceso detallado de optimización de rutas, incluyendo factores como distancia, tiempo y restricciones de entrega.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph LR
+    A[Carga Asignada] --> B[Obtener Direcciones]
+    B --> C[Calcular Distancias]
+    C --> D[Considerar Ventanas de Tiempo]
+    D --> E[Aplicar Restricciones de Tráfico]
+    E --> F[Generar Ruta Inicial]
+    F --> G[Optimizar Secuencia]
+    G --> H{¿Ruta Satisfactoria?}
+    H -->|No| I[Ajustar Parámetros]
+    I --> G
+    H -->|Sí| J[Calcular Tiempo Estimado]
+    J --> K[Generar Instrucciones]
+    K --> L[Ruta Optimizada Lista]
+    L --> M[Enviar al Conductor]
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html>

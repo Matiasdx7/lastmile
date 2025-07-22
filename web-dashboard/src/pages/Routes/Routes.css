@@ -1,0 +1,94 @@
+.routes-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.routes-list {
+  margin-top: 20px;
+}
+
+.routes-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.routes-table th,
+.routes-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.routes-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.routes-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.status-planned {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+}
+
+.status-optimized {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+}
+
+.status-dispatched {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-in_progress {
+  background-color: #ede7f6;
+  color: #4527a0;
+}
+
+.status-completed {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+}
+
+.btn-plan-route {
+  padding: 6px 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+}
+
+.btn-plan-route:hover {
+  background-color: #2980b9;
+}
+
+.routes-loading,
+.routes-error {
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.routes-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}

@@ -1,0 +1,51 @@
+graph TB
+    subgraph "Capa Frontend"
+        WEB[Panel Web<br/>React]
+        MOBILE[App Móvil<br/>React Native]
+    end
+    
+    subgraph "Gateway API"
+        GATEWAY[Gateway API<br/>Express Gateway]
+    end
+    
+    subgraph "Microservicios"
+        ORDER[Servicio de Pedidos<br/>Node.js]
+        VEHICLE[Servicio de Vehículos<br/>Node.js]
+        ROUTE[Servicio de Rutas<br/>Node.js]
+        DISPATCH[Servicio de Despacho<br/>Node.js]
+        NOTIFY[Servicio de Notificaciones<br/>Node.js]
+        BPM[Servicio BPM<br/>Node.js]
+    end
+    
+    subgraph "Capa de Datos"
+        POSTGRES[(PostgreSQL<br/>BD Principal)]
+        REDIS[(Redis<br/>Cache y Sesiones)]
+    end
+    
+    subgraph "Servicios Externos"
+        MAPS[API de Mapas<br/>Google/Mapbox]
+        SMS[Servicio SMS<br/>Twilio]
+    end
+    
+    WEB --> GATEWAY
+    MOBILE --> GATEWAY
+    GATEWAY --> ORDER
+    GATEWAY --> VEHICLE
+    GATEWAY --> ROUTE
+    GATEWAY --> DISPATCH
+    GATEWAY --> NOTIFY
+    GATEWAY --> BPM
+    
+    ORDER --> POSTGRES
+    VEHICLE --> POSTGRES
+    ROUTE --> POSTGRES
+    DISPATCH --> POSTGRES
+    NOTIFY --> POSTGRES
+    BPM --> POSTGRES
+    
+    ORDER --> REDIS
+    VEHICLE --> REDIS
+    ROUTE --> REDIS
+    
+    ROUTE --> MAPS
+    NOTIFY --> SMS

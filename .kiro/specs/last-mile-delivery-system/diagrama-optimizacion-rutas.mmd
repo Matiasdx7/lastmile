@@ -1,0 +1,14 @@
+graph LR
+    A[Carga Asignada] --> B[Obtener Direcciones]
+    B --> C[Calcular Distancias]
+    C --> D[Considerar Ventanas de Tiempo]
+    D --> E[Aplicar Restricciones de Tráfico]
+    E --> F[Generar Ruta Inicial]
+    F --> G[Optimizar Secuencia]
+    G --> H{¿Ruta Satisfactoria?}
+    H -->|No| I[Ajustar Parámetros]
+    I --> G
+    H -->|Sí| J[Calcular Tiempo Estimado]
+    J --> K[Generar Instrucciones]
+    K --> L[Ruta Optimizada Lista]
+    L --> M[Enviar al Conductor]

@@ -1,0 +1,19 @@
+stateDiagram-v2
+    [*] --> PedidoRecibido
+    PedidoRecibido --> Validado: Pedido Válido
+    PedidoRecibido --> Rechazado: Pedido Inválido
+    Validado --> Pendiente: Almacenar Pedido
+    Pendiente --> Consolidado: Agrupar con Otros
+    Consolidado --> VehiculoAsignado: Asignar Vehículo
+    VehiculoAsignado --> RutaOptimizada: Planificar Ruta
+    RutaOptimizada --> Despachado: Enviar al Conductor
+    Despachado --> EnTransito: Conductor Inicia
+    EnTransito --> EnUbicacion: Llegar al Cliente
+    EnUbicacion --> Entregado: Entrega Exitosa
+    EnUbicacion --> Fallido: Entrega Fallida
+    Fallido --> Reprogramado: Reintentar Después
+    Fallido --> Devuelto: Devolver al Depósito
+    Entregado --> [*]
+    Devuelto --> [*]
+    Rechazado --> [*]
+    Reprogramado --> Pendiente
