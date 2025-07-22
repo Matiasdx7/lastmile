@@ -385,14 +385,6 @@ La documentación de la API está disponible para cada servicio:
 3. Asegúrese de que el API Gateway esté funcionando
 4. Limpie la caché del navegador e intente nuevamente
 
-### Contacto de Soporte
-
-Si continúa experimentando problemas, contacte al equipo de soporte:
-
-- Email: support@lastmiledelivery.example.com
-- Teléfono: +1-234-567-8900
-- Horario de atención: Lunes a Viernes, 9:00 - 18:00 (GMT-5)
-
 ## Contribuciones
 
 Las contribuciones son bienvenidas. Por favor, siga estos pasos:
